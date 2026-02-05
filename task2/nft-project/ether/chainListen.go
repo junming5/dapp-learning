@@ -118,7 +118,6 @@ func processEnd(db *gorm.DB, f *contracts.AuctionFilterer, vLog types.Log) {
 		return
 	}
 
-	// 2. 核心逻辑判断：
 	// 如果 Winner 是全 0 地址 (0x000...)，说明没人出价，状态设为 2 (流拍)
 	// 否则，状态设为 1 (已结束/成交)
 	status := 1
@@ -127,7 +126,7 @@ func processEnd(db *gorm.DB, f *contracts.AuctionFilterer, vLog types.Log) {
 		status = 2
 	}
 
-	// 3. 更新数据库：根据 auction_id 找到那条记录，更新状态和赢家地址
+	//更新数据库：根据 auction_id 找到那条记录，更新状态和赢家地址
 	err = db.Model(&model.AuctionRecord{}).
 		Where("auction_id = ?", ev.AuctionId.String()).
 		Updates(map[string]interface{}{
@@ -151,7 +150,6 @@ func processWithdraw(db *gorm.DB, f *contracts.AuctionFilterer, vLog types.Log) 
 		return
 	}
 
-	// 2. 写入数据库
 	record := model.WithdrawRecord{
 		User:      ev.User.Hex(),
 		AmountUsd: ev.Amount.String(),
